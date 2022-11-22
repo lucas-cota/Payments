@@ -77,6 +77,17 @@ async function getUser(req:Request, res:Response, username: string){
     }
 }
 
+async function getUserByName(req:Request, res:Response){
+    try {
+        const user = req.body.username
+
+        const result = await repository.findUser(user)
+        res.status(200).json(result)
+        
+    } catch (error) {
+        res.status(400).json(error)
+    }
+}
 async function loginUser(req:Request, res:Response, next:any) {
     try{
         const loginParams = req.body as IUser;
@@ -97,4 +108,4 @@ async function loginUser(req:Request, res:Response, next:any) {
     }
 }
 
-export default {addUser, getUser, loginUser, getByAccountId}
+export default {addUser, getUser, loginUser, getByAccountId, getUserByName}

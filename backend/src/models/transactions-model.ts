@@ -2,6 +2,7 @@ import Sequelize, { Model, Optional} from 'sequelize';
 import database from '../db';
 import { ITransaction } from './transactions';
 import { accountModel } from './accounts-model'
+import { IAccount } from './accounts';
 
 interface ITransactionCreationAttributes extends Optional<ITransaction, "id">{}
 
@@ -17,24 +18,21 @@ export const transactionModel = database.define<ITransactionModel>('transaction'
     value: {
         type: Sequelize.DECIMAL,
         allowNull: false
-    },
-    createdAt: {
-        type: Sequelize.DATE
     }
+   
 })
 
 transactionModel.belongsTo(accountModel, {
-    foreignKey: 'creditedAccountId'
+    foreignKey: 'creditedAccountId',
+    constraints: false
 })
 
 transactionModel.belongsTo(accountModel, {
-    foreignKey: 'debitedAccountId'
+    foreignKey: 'debitedAccountId',
+    constraints: false
 })
 
 
-function findByDate(data:Date){
-    return transactionModel.findAll<ITransactionModel>({ where: { createdAt: data}})
-}
 
 function findId(id:number){
     return transactionModel.findByPk<ITransactionModel>(id)
@@ -44,8 +42,12 @@ function add(account:ITransaction){
     return transactionModel.create(account)
 }
 
+function findByAccount(account:number){
+    return transactionModel.findAll<ITransactionModel>({ where: { debitedAccountId: account}})
+}
+
 function del(id:number){
     return transactionModel.destroy<ITransactionModel>({ where: {id}})
 }
 
-export default { findId, add, del, findByDate}
+export default { findId, add, del, findByAccount}

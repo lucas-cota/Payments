@@ -1,6 +1,8 @@
 import NavBar from "components/NavBar"
 import { Form } from '@unform/web'
-import { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import LoadNg from "services/loadNg";
+import axios from "axios";
 
 const transacoes = [
     { 
@@ -34,18 +36,41 @@ const transacoes = [
 
 export default function Dashboard(){
     const formRef = useRef(null)
+    const [select, setSelect] = useState('')
+    const userName = localStorage.getItem('userNg')
+    const endPoint = process.env.REACT_APP_END_POINT
     const handleSubmit = () => {
 
     }
 
+    //Buscar usuario logado
+    async function getUser(){
+        
+        await axios.get(`${endPoint}/users`,{
+            data: {'username': userName}
+            
+        })
+        .then((res) => {
+            console.log(res.data)
+        })
+        .catch((e) => {
+            console.log(e)
+        })
+    }
 
+    useEffect(() => {
+        getUser()
+        
+    })
+    
 
+   
     return (     
         <div className="w-full h-full">
             <NavBar />
             <div className="h-80 gray-200 -space-y-36">
                 <div className="w-full h-full max-w-7xl flex  m-auto justify-between">
-                    <h1 className="m-6 text-2xl font-semibold">Olá, Lucas Cota!</h1>
+                    <h1 className="m-6 text-2xl font-semibold">Olá, {userName}!</h1>
                     <h2 className="m-6 text-2xl font-semibold">Balance atual: R$100,00</h2>
                 </div>
                 <div className="flex justify-between">
@@ -78,16 +103,26 @@ export default function Dashboard(){
                         </div>
                     </div>
                     <div className="border-2 w-1/3 h-92 rounded-2xl p-4 mr-28 space-y-12">
-                        <div className="justify-center space-y-12">
-                            <h1 className=" text-2xl">Transações</h1>
-                            <input type='date' className="px-3 py-2 bg-white border shadow-sm border-slate-300
-                                placeholder-slate-400
-                                focus:outline-none focus:border-sky-500
-                                focus:ring-sky-500 block w-60 rounded-md sm:text-sm focus:ring-1" >
-                            </input>
+                        <div className="justify-center space-y-12 ">
+                            <h1 className="text text-2xl">Transações</h1>
+                            <div className="flex">
+                                <p className="text-xl">
+                                    Filtrar
+                                </p>
+                                <select name="select" value={select} onChange={e => setSelect(e.target.value)}
+                                    className="px-1 py-2 bg-white border shadow-sm border-slate-300
+                                    focus:outline-none focus:border-sky-500 ml-2
+                                    focus:ring-sky-500 block w-60 rounded-md sm:text-sm focus:ring-1" >
+                                        <option value=""></option>
+                                        <option value="cashin">cash-in</option>
+                                        <option value="cashout">cash-out</option>
+                                </select>
+                            </div>
+                            
+                            
                         </div>
                         <div>
-                            <ul  className="overflow-auto">
+                            <ul  className="overflow-auto ">
                                 {transacoes.map((items) => {
                                     return (
                                         <>

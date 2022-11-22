@@ -8,7 +8,7 @@ import {IAccount} from '../models/accounts'
 
 
 async function addTransaction(req:Request, res:Response){
-    
+    const date = new Date
     try {
         //Buscar o meu saldo
         const myBalance =  await accountsControllers.getAccountId(req, res, req.body.myAccount)
@@ -39,14 +39,12 @@ async function addTransaction(req:Request, res:Response){
             //Transactions debited      
             const newTransactionsDebited = req.body as ITransaction
             newTransactionsDebited.debitedAccountId = myBalance.dataValues.id
-           // newTransactionsDebited.createdAt = IMPLEMENTAR A DATA ATUAL
             await repository.add(newTransactionsDebited)
 
             //Transactions credited
             const newTransactionsCredited = req.body as ITransaction
             newTransactionsCredited.creditedAccountId = userName.dataValues.accountId
-            newTransactionsCredited.debitedAccountId = null
-          // newTransactionsCredited.createdAt = IMPLEMENTAR A DATA ATUAL 
+            newTransactionsCredited.debitedAccountId = null 
             await repository.add(newTransactionsCredited)
           
             
@@ -61,6 +59,16 @@ async function addTransaction(req:Request, res:Response){
     }
 }
 
+async function getByAccount(req:Request, res:Response){
+    try {
+        const account = req.body.debitedAccountId
+        
+        if(!account) throw new Error('Id is invalid formtat!')
 
-
-export default {addTransaction}
+        const result = await repository.findByAccount(account)
+        res.status(200).json(result)
+    } catch (error) {
+        res.status(400).json(error)
+    }
+}
+export default {addTransaction, getByAccount}

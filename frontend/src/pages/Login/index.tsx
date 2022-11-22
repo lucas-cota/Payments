@@ -23,13 +23,15 @@ export default function Login(){
     }
 
     async function handleSubmit(){
-        valid()
         if(passwordError === false){
             axios.post(`${endPoint}/users/login`, {
                 'username': username,
                 'password': password
             })
             .then((res) => {
+                console.log(res)
+                localStorage.setItem('userNg', username)
+                localStorage.setItem('tokenNg', res.data.token)
                 navigate('/dashboard')
             })
             .catch((e) => {

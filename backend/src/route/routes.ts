@@ -15,8 +15,10 @@ router.post('/accounts', accountsControllers.addAccount)
 router.post('/users', usersControllers.addUser);
 router.post('/users/login', usersControllers.loginUser)
 router.get('/users/:accountId', usersControllers.getByAccountId)
+router.get('/users', usersControllers.getUserByName)
 
 // TRANSACTIONS
 router.post('/transactions', transactionsControllers.addTransaction)
+router.get('/transactions', transactionsControllers.getByAccount)
 
 export default router
