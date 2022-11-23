@@ -28,6 +28,18 @@ async function getAccountId(req:Request, res:Response, id:number){
     }
 }
 
+async function getAccount(req:Request, res:Response){
+    try {
+        const account = parseInt(req.params.id)
+        if(!account) throw new Error('Id is invalid formtat!')
+
+        const result = await repository.findId(account)
+        res.status(200).json(result)
+    } catch (error) {
+        res.status(400).json(error)
+    }
+}
+
 /*async function setAccount(req:Request, res:Response, id:number, value:any){
     try {
         const accountId = id
@@ -45,4 +57,4 @@ async function getAccountId(req:Request, res:Response, id:number){
 }*/
 
 
-export default {addAccount, getAccountId, }
+export default {addAccount, getAccountId, getAccount}

@@ -37,7 +37,9 @@ const transacoes = [
 export default function Dashboard(){
     const formRef = useRef(null)
     const [select, setSelect] = useState('')
+    const [balance, setBalance] = useState()
     const userName:any =  localStorage.getItem('userNg')
+    const accountId = localStorage.getItem('accountIdNg')
     
     const endPoint = process.env.REACT_APP_END_POINT
     const handleSubmit = () => {
@@ -45,27 +47,20 @@ export default function Dashboard(){
     }
 
     //Buscar usuario logado
-    async function getUser(){
-        
+    async function getAccountUser(){
         const ng = new LoadNg()
-        await ng.getByAccount(`${endPoint}/users`,{
-            body: {
-                username: JSON.stringify({
-                    username: userName
-                })
-            }
-            
-        })
+        await ng.get(`${endPoint}/accounts/${accountId}`)
         .then((res) => {
-            console.log(res.data)
+            console.log(res)
+            setBalance(res.balance)
         })
         .catch((e) => {
             console.log(e)
         })
     }
-
+    console.log(balance)
     useEffect(() => {
-        getUser()
+        getAccountUser()
         
     })
     
@@ -77,7 +72,7 @@ export default function Dashboard(){
             <div className="h-80 gray-200 -space-y-36">
                 <div className="w-full h-full max-w-7xl flex  m-auto justify-between">
                     <h1 className="m-6 text-2xl font-semibold">Olá, {userName}!</h1>
-                    <h2 className="m-6 text-2xl font-semibold">Balance atual: R$100,00</h2>
+                    <h2 className="m-6 text-2xl font-semibold">Balance atual: R${balance}</h2>
                 </div>
                 <div className="flex justify-between">
                     <div className="ml-28  border-2 w-1/3 h-92 rounded-2xl  p-4">

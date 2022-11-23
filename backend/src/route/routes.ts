@@ -8,7 +8,7 @@ const router = Router()
 
 // ACCOUNTS
 router.post('/accounts', accountsControllers.addAccount)
-//router.get('/accounts/:id', accountsControllers.getAccountId)
+router.get('/accounts/:id', accountsControllers.getAccount)
 //router.patch('/accounts/:id', accountsControllers.setAccount)
 
 // USERS

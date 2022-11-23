@@ -14,7 +14,7 @@ export const accountModel = database.define<IAccountModel>('account', {
         allowNull: false
     },
     balance: {
-        type: Sequelize.FLOAT
+        type: Sequelize.DECIMAL
     }    
 })
 

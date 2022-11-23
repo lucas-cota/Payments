@@ -104,7 +104,7 @@ async function loginUser(req:Request, res:Response, next:any) {
             const isValid = auth.comparePassword(loginParams.password, user.password);
             if(isValid){
                 const token = await auth.signToken(user.id!);
-                return res.json({ auth: true, token, id: user.id, name: user.username });
+                return res.json({ auth: true, token, id: user.id, name: user.username, accountId: user.accountId });
             }
         }
         return res.status(401).end();

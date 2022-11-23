@@ -32,10 +32,12 @@ export default function Login(){
                 console.log(res)
                 localStorage.setItem('userNg', username)
                 localStorage.setItem('tokenNg', res.data.token)
+                localStorage.setItem('accountIdNg', res.data.accountId)
                 navigate('/dashboard')
             })
             .catch((e) => {
-                console.log(e)
+                alert('Por favor, revise seus dados!')
+                
             })
         }
     }
