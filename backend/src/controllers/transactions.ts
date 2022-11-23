@@ -8,7 +8,7 @@ import {IAccount} from '../models/accounts'
 
 
 async function addTransaction(req:Request, res:Response){
-    const date = new Date
+    
     try {
         //Buscar o meu saldo
         const myBalance =  await accountsControllers.getAccountId(req, res, req.body.myAccount)

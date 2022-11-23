@@ -38,11 +38,26 @@ export default function Dashboard(){
     const formRef = useRef(null)
     const [select, setSelect] = useState('')
     const [balance, setBalance] = useState()
+    const [name, setName]:any = useState()
+    const [value, setValue]:any = useState()
     const userName:any =  localStorage.getItem('userNg')
     const accountId = localStorage.getItem('accountIdNg')
     
     const endPoint = process.env.REACT_APP_END_POINT
-    const handleSubmit = () => {
+    async function handleSubmit() {
+       
+        const ng = new LoadNg()
+        await axios.post(`${endPoint}/transactions`, {
+            "username": name,
+            "myAccount": accountId,
+            "value": value
+        })
+        .then((res) => {
+            console.log(res)
+        })
+        .catch((e) => {
+            console.log(e.response)
+        })
 
     }
 
@@ -51,20 +66,19 @@ export default function Dashboard(){
         const ng = new LoadNg()
         await ng.get(`${endPoint}/accounts/${accountId}`)
         .then((res) => {
-            console.log(res)
             setBalance(res.balance)
         })
         .catch((e) => {
             console.log(e)
         })
     }
-    console.log(balance)
+    
     useEffect(() => {
         getAccountUser()
         
     })
     
-
+    
    
     return (     
         <div className="w-full h-full">
@@ -80,21 +94,21 @@ export default function Dashboard(){
                             <h1 className=" text-2xl">Realize uma transferência digitando o nome do usuário</h1>
                             <Form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
                                 <p className=" text-xl flex ">Nome 
-                                    <input className="ml-2 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400
+                                    <input onChange={e => setName(e.target.value)} className="ml-2 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400
                                         focus:outline-none focus:border-sky-500
                                         focus:ring-sky-500 block w-60 rounded-md sm:text-sm focus:ring-1" 
                                         placeholder="Nome do usuário" >
                                     </input>
                                 </p>
                                 <p className=" text-xl flex">Valor
-                                    <input className="ml-4 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400
+                                    <input onChange={e => setValue(e.target.value)} name="value" className="ml-4 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400
                                         focus:outline-none focus:border-sky-500
                                         focus:ring-sky-500 block w-60 rounded-md sm:text-sm focus:ring-1" 
                                         placeholder="Digite o valor em centavos" >
                                     </input>
                                 </p>
                                 <div>
-                                    <button type='submit' className="ml-44 w-32 h-7 mt-4 text-white font-semibold 
+                                    <button type="submit" className="ml-44 w-32 h-7 mt-4 text-white font-semibold 
                                     bg-blue-600 border rounded
                                     hover:bg-blue-700">
                                         Transferir
