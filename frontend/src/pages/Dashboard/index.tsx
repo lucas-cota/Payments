@@ -37,7 +37,8 @@ const transacoes = [
 export default function Dashboard(){
     const formRef = useRef(null)
     const [select, setSelect] = useState('')
-    const userName = localStorage.getItem('userNg')
+    const userName:any =  localStorage.getItem('userNg')
+    
     const endPoint = process.env.REACT_APP_END_POINT
     const handleSubmit = () => {
 
@@ -46,8 +47,13 @@ export default function Dashboard(){
     //Buscar usuario logado
     async function getUser(){
         
-        await axios.get(`${endPoint}/users`,{
-            data: {'username': userName}
+        const ng = new LoadNg()
+        await ng.getByAccount(`${endPoint}/users`,{
+            body: {
+                username: JSON.stringify({
+                    username: userName
+                })
+            }
             
         })
         .then((res) => {

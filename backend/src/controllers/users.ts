@@ -36,13 +36,19 @@ async function addUser(req:Request, res:Response){
         const validt = validator(req.body.password)
         const getResult = await getUser(req, res, userName)
         if(getResult){
-            res.send(400).json('Usuário já está em uso')
+            res.status(400).json('Usuário já está em uso')
             console.log('Usuário já está em uso')
+            return 
 
-        } else if(!validt){
+        }else if(userName.length < 3){
+            res.status(400).json('Seu username deve conter no minimo 3 caracteres')
+            console.log('username invalid')
+            return
+        }
+        else if(!validt){
             console.log('Password invalid')
-            res.status(400).json('Password deve conter no minimo 1 letra maiúscula, 1 minúscula, 1 número e um caractere especial')   
-            
+            res.status(400).json('Password deve conter no minimo 8 caracteres sendo, 1 letra maiúscula, 1 minúscula, 1 número e um caractere especial ')   
+            return
         }else {
             const user = req.body as IUser
             user.password = auth.hashPassword(user.password)
@@ -86,6 +92,7 @@ async function getUserByName(req:Request, res:Response){
         
     } catch (error) {
         res.status(400).json(error)
+        console.log(error)
     }
 }
 async function loginUser(req:Request, res:Response, next:any) {

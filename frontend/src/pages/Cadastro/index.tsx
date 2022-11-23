@@ -23,6 +23,7 @@ export default function Cadastro(){
     })
     .catch((e) => {
       console.log(e)
+      alert(e.response.data)
     })
   }
 
