@@ -4,8 +4,9 @@ import fs from 'fs';
 
 const privateKey = fs.readFileSync('./key/private.key', 'utf8');
 const publicKey = fs.readFileSync('./key/public.key', 'utf8');
-const jwtExpires = '24h'
+const jwtExpires = 86400
 const jwtAlgorithm = "RS256";
+
 
 type Token = { 
     userId: number
@@ -24,4 +25,14 @@ function signToken(userId: number){
     return jwt.sign(token, privateKey, { expiresIn: jwtExpires, algorithm: jwtAlgorithm });
 }
 
-export default { hashPassword, comparePassword, signToken }
+async function verifyToken(token: string){
+    try {
+        const decodedToken : Token = await jwt.verify(token, publicKey, { algorithm: [jwtAlgorithm] } as VerifyOptions) as Token;
+        return { userId: decodedToken.userId };
+    } catch (error) {
+        console.log(`verify: ${error}`);
+        return null;
+    }
+}
+
+export default { hashPassword, comparePassword, signToken, verifyToken }

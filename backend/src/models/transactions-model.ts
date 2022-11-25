@@ -18,19 +18,16 @@ export const transactionModel = database.define<ITransactionModel>('transaction'
     value: {
         type: Sequelize.DECIMAL,
         allowNull: false
+    },
+    type: {
+        type:Sequelize.STRING
     }
    
 })
 
-transactionModel.belongsTo(accountModel, {
-    foreignKey: 'creditedAccountId',
-    constraints: false
-})
+transactionModel.belongsTo(accountModel)
 
-transactionModel.belongsTo(accountModel, {
-    foreignKey: 'debitedAccountId',
-    constraints: false
-})
+
 
 
 
@@ -43,8 +40,9 @@ function add(account:ITransaction){
 }
 
 function findByAccount(account:number){
-    return transactionModel.findAll<ITransactionModel>({ where: { debitedAccountId: account}})
+    return transactionModel.findAll<ITransactionModel>({ where: { accountId: account}})
 }
+
 
 function del(id:number){
     return transactionModel.destroy<ITransactionModel>({ where: {id}})

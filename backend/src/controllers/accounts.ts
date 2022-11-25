@@ -40,21 +40,7 @@ async function getAccount(req:Request, res:Response){
     }
 }
 
-/*async function setAccount(req:Request, res:Response, id:number, value:any){
-    try {
-        const accountId = id
-        if(!accountId) throw new Error('Id is invalid formtat!')
 
-        const account = req.body as IAccount
-        account.balance += value
-        
-        const newAccount = await repository.set(accountId, account)
-        return newAccount
-        res.status(200).json(newAccount)
-    } catch (error) {
-        res.status(400).json(error)
-    }
-}*/
 
 
 export default {addAccount, getAccountId, getAccount}

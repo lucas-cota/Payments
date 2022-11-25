@@ -1,82 +1,89 @@
 import NavBar from "components/NavBar"
 import { Form } from '@unform/web'
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import LoadNg from "services/loadNg";
 import axios from "axios";
 
-const transacoes = [
-    { 
-        id: 1,
-        cashin : 1,
-        value: 20
-    },
-    { 
-        id: 2,
-        cashout : 3,
-        value: 30
-    },
-    { 
-        id: 1,
-        cashin : 1,
-        value: 40
-    },
-    { 
-        id: 1,
-        cashin : 1,
-        value: 40
-    },
-    { 
-        id: 1,
-        cashin : 1,
-        value: 40
-    },
-    
-]
+
+
+
+
 
 
 export default function Dashboard(){
     const formRef = useRef(null)
-    const [select, setSelect] = useState('')
-    const [balance, setBalance] = useState()
+    const [select, setSelect] = useState('todas')
+    const [balance, setBalance]:any = useState()
     const [name, setName]:any = useState()
     const [value, setValue]:any = useState()
+    const [transactions, setTransactions]:any = useState([{type: 'credited', value: '10'}, {type: 'credited', value: '10'}])
     const userName:any =  localStorage.getItem('userNg')
     const accountId = localStorage.getItem('accountIdNg')
-    
+    const token = localStorage.getItem('tokenNg')
     const endPoint = process.env.REACT_APP_END_POINT
+    
+
+    //Submit Transaction
     async function handleSubmit() {
-       
-        const ng = new LoadNg()
-        await axios.post(`${endPoint}/transactions`, {
+        const data = {
             "username": name,
             "myAccount": accountId,
-            "value": value
+            "value": parseFloat(value.replace(',', '.'))
+        }
+          axios.post(`${endPoint}/transactions`, data, {
+            headers: {          
+                'x-access-token': token
+            } 
         })
         .then((res) => {
             console.log(res)
+            alert('Transferência realizada com sucesso ')
+            window.location.reload()
         })
         .catch((e) => {
-            console.log(e.response)
+            console.log(e)
+            alert(e)
         })
 
     }
 
-    //Buscar usuario logado
+    //Get user logged
     async function getAccountUser(){
-        const ng = new LoadNg()
-        await ng.get(`${endPoint}/accounts/${accountId}`)
+        await axios.get(`${endPoint}/accounts/${accountId}`, {
+            headers: {
+                'x-access-token': token
+            }
+        })
         .then((res) => {
-            setBalance(res.balance)
+            setBalance(res.data.balance)
         })
         .catch((e) => {
             console.log(e)
         })
     }
+
+    //Get Transactions
+    async function getTransactions(){
+        await axios.get(`${endPoint}/transactions/${accountId}`,{ 
+            headers: {
+                'x-access-token': token
+            }
+        })
+        .then((res) => {
+            setTransactions(res.data)
+            
+        })
+        .catch((e) => {
+            console.log(e)
+        })
+    }
+
     
     useEffect(() => {
+       
         getAccountUser()
-        
-    })
+        getTransactions()
+    }, [])
     
     
    
@@ -94,17 +101,18 @@ export default function Dashboard(){
                             <h1 className=" text-2xl">Realize uma transferência digitando o nome do usuário</h1>
                             <Form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
                                 <p className=" text-xl flex ">Nome 
-                                    <input onChange={e => setName(e.target.value)} className="ml-2 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400
+                                    <input onChange={e => setName(e.target.value)} className="ml-2 px-3 py-2
+                                        bg-white border shadow-sm border-slate-300 placeholder-slate-400
                                         focus:outline-none focus:border-sky-500
                                         focus:ring-sky-500 block w-60 rounded-md sm:text-sm focus:ring-1" 
                                         placeholder="Nome do usuário" >
                                     </input>
                                 </p>
                                 <p className=" text-xl flex">Valor
-                                    <input onChange={e => setValue(e.target.value)} name="value" className="ml-4 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400
+                                    <input type='number' step="0.01" onChange={e => setValue(e.target.value)} name="value" className="ml-4 px-3 py-2 bg-white border shadow-sm border-slate-300 placeholder-slate-400
                                         focus:outline-none focus:border-sky-500
                                         focus:ring-sky-500 block w-60 rounded-md sm:text-sm focus:ring-1" 
-                                        placeholder="Digite o valor em centavos" >
+                                        placeholder="Digite o valor" >
                                     </input>
                                 </p>
                                 <div>
@@ -117,36 +125,60 @@ export default function Dashboard(){
                             </Form>
                         </div>
                     </div>
-                    <div className="border-2 w-1/3 h-92 rounded-2xl p-4 mr-28 space-y-12">
+                    <div className="border-2 w-1/3 h-84 rounded-2xl p-4 mr-28 space-y-12 ">
                         <div className="justify-center space-y-12 ">
                             <h1 className="text text-2xl">Transações</h1>
                             <div className="flex">
-                                <p className="text-xl">
+                                <p className=" text-xl flex ">
                                     Filtrar
                                 </p>
                                 <select name="select" value={select} onChange={e => setSelect(e.target.value)}
                                     className="px-1 py-2 bg-white border shadow-sm border-slate-300
                                     focus:outline-none focus:border-sky-500 ml-2
                                     focus:ring-sky-500 block w-60 rounded-md sm:text-sm focus:ring-1" >
-                                        <option value=""></option>
-                                        <option value="cashin">cash-in</option>
-                                        <option value="cashout">cash-out</option>
+                                        <option  value='todas'>Todas</option>
+                                        <option  value='cashin'>cash-in</option>
+                                        <option  value='cashout'>cash-out</option>
                                 </select>
+                                
+                               
+                            
                             </div>
-                            
-                            
                         </div>
-                        <div>
-                            <ul  className="overflow-auto ">
-                                {transacoes.map((items) => {
+                        <div style={select === 'todas' ? { display: 'block' }: { display: 'none'} }>
+                            <ul>
+                                {transactions.map((items:any) => {
                                     return (
-                                        <>
-                                        <li>{items.value}</li>
-                                        </>
+                                        
+                                        <li>{items.type}:  R$:{items.value}</li>
+                                        
                                     )
                                 })}
                             </ul>
                         </div>
+                        <div style={select === 'cashin' ? { display: 'block' }: { display: 'none'} }>
+                            <ul >    
+                                {transactions.map((items:any) => {
+                                    return (
+                                        
+                                        <li>{items.type === 'credited' ? items.type + ':  R$:' + items.value : null}</li>
+                                        
+                                    )
+                                })}
+                            </ul>
+                        </div>
+                        <div style={select === 'cashout' ? { display: 'block' }: { display: 'none'} }>
+                            <ul>    
+                                {transactions.map((items:any) => {
+                                    return (
+                                        
+                                        <li>{items.type === 'debited' ? items.type + ':  R$:' + items.value : null}</li>
+                                        
+                                    )
+                                })}
+                            </ul>
+                        </div>
+                        
                     </div>
                 </div>
             </div>

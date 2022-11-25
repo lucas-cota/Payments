@@ -12,16 +12,6 @@ export default function Login(){
     const navigate = useNavigate()
     const endPoint = process.env.REACT_APP_END_POINT
 
-    const validator = new RegExp("^(?=.*?[A-Za-z])(?=.*?[0-9]).{8,20}$")
-    const valid = () => {
-        if(!validator.test(password)){
-            setPasswordError(true)
-            alert('A sua senha precisa ter no mínimo 8 caracteres uma letra maiúscula, um número e um caracter especial ')
-        }else {
-            setPasswordError(false)
-        }
-    }
-
     async function handleSubmit(){
         if(passwordError === false){
             axios.post(`${endPoint}/users/login`, {
@@ -29,7 +19,6 @@ export default function Login(){
                 'password': password
             })
             .then((res) => {
-                console.log(res)
                 localStorage.setItem('userNg', username)
                 localStorage.setItem('tokenNg', res.data.token)
                 localStorage.setItem('accountIdNg', res.data.accountId)

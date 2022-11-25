@@ -18,6 +18,10 @@ async function addTransaction(req:Request, res:Response){
 
             //Pegar usuario que deseja pagar
             const userName:any = await usersControllers.getUser(req, res, req.body.username)
+            if(!userName){
+                res.status(400).json('Usuário não encontrado')
+                return
+            }
             const balanceAtual = userName.dataValues.account.dataValues.balance
 
             //Checando se o account é diferente de quem ta logado
@@ -28,7 +32,7 @@ async function addTransaction(req:Request, res:Response){
 
             //Atualiza o balance de quem recebeu
             const account = req.body as IAccount
-            account.balance = balanceAtual + req.body.value           
+            account.balance = parseFloat(balanceAtual) + parseFloat(req.body.value)        
             const newAccount = await repositoryAccount.set(userName.dataValues.accountId, account)
 
             //Atualiza o balance de quem pagou
@@ -38,13 +42,15 @@ async function addTransaction(req:Request, res:Response){
 
             //Transactions debited      
             const newTransactionsDebited = req.body as ITransaction
-            newTransactionsDebited.debitedAccountId = myBalance.dataValues.id
+            newTransactionsDebited.accountId = myBalance.dataValues.id
+            newTransactionsDebited.type = 'debited'
+
             await repository.add(newTransactionsDebited)
 
             //Transactions credited
             const newTransactionsCredited = req.body as ITransaction
-            newTransactionsCredited.creditedAccountId = userName.dataValues.accountId
-            newTransactionsCredited.debitedAccountId = null 
+            newTransactionsCredited.accountId = userName.dataValues.accountId
+            newTransactionsCredited.type = 'credited' 
             await repository.add(newTransactionsCredited)
           
             
@@ -56,12 +62,13 @@ async function addTransaction(req:Request, res:Response){
 
     } catch (error) {
         res.status(400).json(error)
+        console.log(error)
     }
 }
 
 async function getByAccount(req:Request, res:Response){
     try {
-        const account = req.body.debitedAccountId
+        const account = parseInt(req.params.id)
         
         if(!account) throw new Error('Id is invalid formtat!')
 
