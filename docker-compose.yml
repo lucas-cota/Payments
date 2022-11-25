@@ -1,0 +1,39 @@
+version: '3.7'
+services:
+  backend:
+    build: './backend'
+    command: npm run dev
+    restart: always
+    ports:
+      - '3333:3333'
+    volumes:
+      - type: bind
+        source: './backend'
+        target: /backend/user/app
+    depends_on:
+      - db
+
+  db:
+    image: postgres
+    restart: always
+    container_name: postgres-db
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: root
+      POSTGRES_DB: NG
+    ports:
+      - "5432:5432"
+
+
+  frontend:
+    build: './frontend'
+    command: npm start
+    restart: always
+    ports: 
+      - '3000:3000'
+    volumes:
+      - type: bind
+        source: './frontend'
+        target: /frontend/user/app
+    depends_on:
+      - backend
