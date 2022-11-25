@@ -26,10 +26,6 @@ function add(account:IAccount){
     return accountModel.create(account)
 }
 
-function del(id:number){
-    return accountModel.destroy<IAccountModel>({ where: {id}})
-
-}
 
 async function set(id:number, account:IAccount, ){
     const originalAccount = await accountModel.findByPk<IAccountModel>(id)
@@ -44,4 +40,4 @@ async function set(id:number, account:IAccount, ){
     throw new Error('Account not found.');
 }
 
-export default { findId, add, del, set}
+export default { findId, add,  set}

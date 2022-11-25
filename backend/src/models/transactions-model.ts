@@ -44,8 +44,5 @@ function findByAccount(account:number){
 }
 
 
-function del(id:number){
-    return transactionModel.destroy<ITransactionModel>({ where: {id}})
-}
 
-export default { findId, add, del, findByAccount}
+export default { findId, add, findByAccount}

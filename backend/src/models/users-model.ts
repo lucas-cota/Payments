@@ -62,8 +62,6 @@ function add(user:IUser){
     return userModel.create(user)
 }
 
-function del(id:number){
-    return userModel.destroy<IUserModel>({ where: {id}})
-}
 
-export default { findId, add, del, findUser, findAccountId}
+
+export default { findId, add, findUser, findAccountId}

@@ -6,8 +6,9 @@ const password = process.env.DB_PASSWORD
 const dbHost = process.env.DB_HOST
 
 
+
 // Option 1: Passing parameters separately
-const sequelize = new Sequelize(database, username, 'root', {
+const sequelize = new Sequelize(database, username, password, {
   host: dbHost,
   dialect: 'postgres'
 });

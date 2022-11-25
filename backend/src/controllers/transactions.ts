@@ -43,14 +43,14 @@ async function addTransaction(req:Request, res:Response){
             //Transactions debited      
             const newTransactionsDebited = req.body as ITransaction
             newTransactionsDebited.accountId = myBalance.dataValues.id
-            newTransactionsDebited.type = 'debited'
+            newTransactionsDebited.type = 'Debited'
 
             await repository.add(newTransactionsDebited)
 
             //Transactions credited
             const newTransactionsCredited = req.body as ITransaction
             newTransactionsCredited.accountId = userName.dataValues.accountId
-            newTransactionsCredited.type = 'credited' 
+            newTransactionsCredited.type = 'Credited' 
             await repository.add(newTransactionsCredited)
           
             

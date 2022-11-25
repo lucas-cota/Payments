@@ -1,7 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import router from './route/routes';
-import helmet from 'helmet';
 import cors from 'cors';
 
 
@@ -25,7 +24,7 @@ const corsOptions = {
 app.use(express.urlencoded ({
     extended: true
 }));
-app.use(helmet());
+
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(bodyParser.json())
