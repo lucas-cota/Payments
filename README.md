@@ -12,6 +12,8 @@ Além disto é bom ter um editor para trabalhar com o código como [VSCode](http
 
 # Etapas para rodar a aplicação
 
-- acesse a pasta backend e crie o arquivo .env seguindo o .env.example como exemplo
-- acesse a pasta frontend e crie o arquivo .env seguindo o .env.example como exemplo
-- volte para a raiz do projeto e rode o comando docker-compose up
+- Use o postgers como banco de dados
+- Acesse a pasta backend e crie o arquivo .env seguindo o .env.example como exemplo
+- Acesse a pasta frontend e crie o arquivo .env seguindo o .env.example como exemplo
+- Volte para a raiz do projeto e rode o comando docker-compose up
+- Acesse http://localhost:3000/ no seu navegador
